@@ -1,0 +1,46 @@
+version: '2.1'
+
+services:
+  jrc_mysql:
+    image: mysql:latest
+    container_name: jrc_mysql
+    command: mysqld --user=root
+    environment:
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_ALLOW_EMPTY_PASSWORD=${MYSQL_ALLOW_EMPTY_PASSWORD}
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      timeout: 30s
+      retries: 5
+    ports:
+      - ${MYSQL_PORT}:${MYSQL_PORT}
+    volumes:
+      - ./src/main/resources/sql:/docker-entrypoint-initdb.d
+
+  jrc_app:
+    links:
+      - jrc_mysql
+    image: jrc
+    container_name: jrc_app
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    depends_on:
+      jrc_mysql:
+        condition: service_healthy
+    expose:
+      - ${APP_PORT}
+    ports:
+      - ${APP_PORT}:${APP_PORT}
+    environment:
+      - APP_PORT=${APP_PORT}
+      - MYSQL_HOST=${MYSQL_HOST}
+      - MYSQL_PORT=${MYSQL_PORT}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+    volumes:
+      - /data/spring-boot-app

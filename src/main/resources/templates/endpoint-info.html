@@ -1,0 +1,177 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Java Request Catcher</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}" type="text/css"/>
+    <link rel="stylesheet" th:href="@{/css/main.css}" href="../../css/main.css"/>
+</head>
+<body>
+
+<script th:src="@{/webjars/jquery/jquery.min.js}" type="text/javascript"></script>
+<script th:src="@{/webjars/popper.js/umd/popper.min.js}" type="text/javascript"></script>
+<script th:src="@{/webjars/bootstrap/js/bootstrap.min.js}" type="text/javascript"></script>
+
+<div class="container col-lg-12 row">
+
+    <div class="alert alert-success top-page-alert col-lg-10 mx-auto mt-4 mr-4 ml-4" role="alert">
+        <span th:text="${title}" class="font-weight-bold"></span>
+    </div>
+
+    <div id="errors" class="col-lg-10 mx-auto m-3" th:if="${param.error}">
+        <div class="alert alert-danger" role="alert">
+            <ul class="p-2">
+                <li th:each="err : ${errors}" th:text="${err}">Error</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="alert alert-warning col-lg-10 mx-auto">
+        <div class="col-lg-2 mt-3 mb-3 float-left">
+            <span class="font-weight-bold" th:text="${endpoint.path}"></span>
+        </div>
+
+        <div th:switch="${endpoint.active}" role="group" class="col-lg-1 mt-2 mb-3 mr-2 float-left btn-group">
+            <form action="#" th:case="${true}"
+                  th:action="@{'/endpoints-manager/{id}/active/false'(id=${endpoint.id})}" th:method="put">
+                <input type="hidden" name="_method" value="put"/>
+                <button type="submit" class="btn btn-warning">Pause</button>
+            </form>
+            <form action="#" th:case="*"
+                  th:action="@{'/endpoints-manager/{id}/active/true'(id=${endpoint.id})}"
+                  th:method="put">
+                <input type="hidden" name="_method" value="put"/>
+                <button type="submit" class="btn btn-success">Resume</button>
+            </form>
+        </div>
+
+        <div class="col-lg-1 mt-2 mb-3 float-left">
+            <form action="#" th:action="@{'/endpoints-manager/{id}/clear'(id=${endpoint.id})}"
+                  th:method="post">
+                <input type="hidden" name="_method" value="post"/>
+                <button type="submit" class="btn btn-danger">Clear</button>
+            </form>
+        </div>
+
+        <div class="col-lg-4 mt-2 mb-3 float-right">
+            <form class="form-inline">
+                <input type="text" class="form-control" name="query" id="query" placeholder="Search for ...">
+                <button type="submit" class="btn btn-info">Go!</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="col-lg-10 mx-auto">
+        <div class="col-lg-1 float-left">
+            <a role="button" class="btn btn-info mt-2 mb-3" th:href="@{'/'}">Back</a>
+        </div>
+
+        <div class="col-lg-1 float-left">
+            <button type="submit" class="btn btn-primary mt-2 mb-3" onclick="window.location.reload()">Refresh</button>
+        </div>
+
+        <div class="col-lg-4 float-right">
+            <p class="font-italic mt-2 mb-3">* All rows are clickable</p>
+        </div>
+    </div>
+
+    <div class="col-lg-10 mx-auto">
+
+        <table class="table table-hover">
+            <thead>
+            <tr>
+                <th scope="col" width="20%">Received At</th>
+                <th scope="col" width="80%">Request Data</th>
+            </tr>
+            </thead>
+            <tbody>
+            <div th:each="request : ${requestsPage.content}">
+                <tr th:attr="data-target='#detailed-info-'+${request.id}" class="accordion-toggle"
+                    data-toggle="collapse">
+                    <td th:text="${#temporals.format(request.receivedAt, 'dd-MM-yyyy HH:mm:ss')}"></td>
+                    <td>
+                        <span class="font-weight-bold" th:text="${request.requestMethod}"></span>
+                        <span th:text="' ' + ${request.url}"></span>
+                    </td>
+                </tr>
+                <tr th:id="'detailed-info-' + ${request.id}" class="accordion-body collapse">
+                    <td class="hiddenRow bg-frozen-grass" colspan="2">
+                        <span class="font-weight-bold">Body:</span>
+                        <div th:text="${request.body}" class="bg-sunny-oak-leave mx-auto m-2 p-2"></div>
+
+                        <span class="font-weight-bold">Headers:</span>
+                        <div class="container bg-sunny-oak-leave mx-auto m-2 p-2">
+                            <div class="row ">
+                                <div class="col col-lg-6 font-italic text-info">Name</div>
+                                <div class="col col-lg-6 font-italic text-info">Value</div>
+                            </div>
+                            <div th:each="requestHeader : ${request.requestHeaders}" class="row">
+                                <div th:text="${requestHeader.name}" class="col col-lg-6"></div>
+                                <div th:text="${requestHeader.value}" class="col col-lg-6"></div>
+                            </div>
+                        </div>
+
+                        <span class="font-weight-bold">Cookies:</span>
+                        <div class="container bg-sunny-oak-leave break-text mx-auto m-2 p-2">
+                            <div class="row">
+                                <div class="col col-lg-2 font-italic text-info">Name</div>
+                                <div class="col col-lg-2 font-italic text-info">Value</div>
+                                <div class="col col-lg-2 font-italic text-info">Domain</div>
+                                <div class="col col-lg-2 font-italic text-info">Path</div>
+                                <div class="col col-lg-2 font-italic text-info">Max Age</div>
+                                <div class="col col-lg-1 font-italic text-info">HTTP Only</div>
+                                <div class="col col-lg-1 font-italic text-info">Secure</div>
+                            </div>
+                            <div th:each="requestCookie : ${request.requestCookies}" class="row">
+                                <div th:text="${requestCookie.name}" class="col col-lg-2"></div>
+                                <div th:text="${requestCookie.value}" class="col col-lg-2"></div>
+                                <div th:text="${requestCookie.domain}" class="col col-lg-2"></div>
+                                <div th:text="${requestCookie.path}" class="col col-lg-2"></div>
+                                <div th:text="${requestCookie.maxAge}" class="col col-lg-2"></div>
+                                <div th:text="${requestCookie.httpOnly}" class="col col-lg-1"></div>
+                                <div th:text="${requestCookie.secure}" class="col col-lg-1"></div>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            </div>
+            </tbody>
+        </table>
+
+        <div class="col-lg-10 mx-auto">
+            <div class="col-lg-3 float-left">
+                <form class="form-inline" action="#" th:action="@{${#httpServletRequest.requestURL}}" th:method="get">
+                    <div class="form-group row m-1 p-1">
+                        <label for="size" class="col-lg-7 col-form-label">Items per page: </label>
+                        <input type="text" class="col-lg-5 form-control" name="size" id="size"
+                               th:placeholder="${requestsPage.size}">
+                        <input type="hidden" class="col-lg-5 form-control" name="query" id="searchQuery" th:value="${query}">
+                        <input type="submit" style="display: none"/>
+                    </div>
+                </form>
+            </div>
+
+            <div class="col-lg-3 float-right">
+                <div th:if="${requestsPage.totalPages > 0}" class="btn-toolbar pagination" role="toolbar">
+                    <div class="btn-group m-1 p-1" role="group">
+                        <a th:href="@{${#httpServletRequest.requestURL}} + @{?(size=${requestsPage.size}, page=1, query=${query})}"
+                           th:class="${1==requestsPage.number + 1} ? 'btn btn-primary' : 'btn btn-secondary'">First</a>
+                        <a th:href="@{${#httpServletRequest.requestURL}} + @{?(size=${requestsPage.size}, page=${requestsPage.number}, query=${query})}"
+                           th:class="${1==requestsPage.number + 1} ? 'btn btn-secondary disabled' : 'btn btn-secondary'"><</a>
+                        <a th:href="@{${#httpServletRequest.requestURL}} + @{?(size=${requestsPage.size}, page=${requestsPage.number + 1}, query=${query})}"
+                           th:text="${requestsPage.number + 1}"
+                           class="btn btn-primary"></a>
+                        <a th:href="@{${#httpServletRequest.requestURL}} + @{?(size=${requestsPage.size}, page=${requestsPage.number + 2}, query=${query})}"
+                           th:class="${requestsPage.getTotalPages()==requestsPage.number + 1} ? 'btn btn-secondary disabled' : 'btn btn-secondary'">></a>
+                        <a th:href="@{${#httpServletRequest.requestURL}} + @{?(size=${requestsPage.size}, page=${requestsPage.getTotalPages()}, query=${query})}"
+                           th:class="${requestsPage.getTotalPages()==requestsPage.number + 1} ? 'btn btn-primary' : 'btn btn-secondary'">Last</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+</body>
+</html>

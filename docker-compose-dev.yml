@@ -1,0 +1,19 @@
+version: '2.1'
+
+services:
+  jrc_app:
+    image: jrc
+    container_name: jrc_app
+    build:
+      context: ./
+      dockerfile: Dockerfile-dev
+    ports:
+      - ${APP_PORT}:${APP_PORT}
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev
+      - APP_PORT=${APP_PORT}
+      - MYSQL_HOST=host.docker.internal
+      - MYSQL_PORT=3306
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
