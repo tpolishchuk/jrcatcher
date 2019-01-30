@@ -1,0 +1,13 @@
+version: '2.1'
+
+services:
+  jrc_app:
+    image: jrc
+    container_name: jrc_app
+    build:
+      context: ./
+      dockerfile: Dockerfile-custom-db
+    ports:
+    - ${APP_PORT}:${APP_PORT}
+    env_file:
+    - ./.env.custom.db
