@@ -1,0 +1,19 @@
+language: java
+sudo: false
+
+jdk:
+  - openjdk11
+
+branches:
+  only:
+    - master
+
+cache:
+  directories:
+    - "$HOME/.m2"
+
+script:
+  - mvn clean install
+
+after_success:
+  - echo "TODO"
