@@ -21,7 +21,8 @@
 
     <div class="col-lg-10 mx-auto">
         <div class="col-lg-10 float-left">
-            <button class="btn btn-primary btn-success mt-2 mb-3" data-toggle="collapse" data-target="#add-listener">
+            <button class="btn btn-primary btn-success mt-2 mb-3" data-toggle="collapse" data-target="#add-listener"
+                    id="add-listener-button">
                 Add listener
             </button>
             <div class="collapse" id="add-listener">
@@ -32,7 +33,7 @@
 
                     <div class="col-md-12">
                         <form class="form-inline" method="post" action="#" th:action="@{/endpoints-manager}"
-                              th:object="${newEndpoint}">
+                              th:object="${newEndpoint}" id="add-listener-form">
                             <div class="form-group mx-sm-3 mb-2">
                                 <label for="path" class="mx-sm-3"><b>/endpoints/</b></label>
                                 <input type="text" class="form-control" id="path" autocomplete="off"
@@ -49,7 +50,8 @@
 
         <div class="col-lg-2 float-right">
             <form action="#" th:action="@{/clear-database}" th:method="post">
-                <button type="submit" class="btn btn-primary btn-danger mt-2 mb-3">Clear database</button>
+                <button type="submit" class="btn btn-primary btn-danger mt-2 mb-3" id="clear-db-button">Clear database
+                </button>
             </form>
         </div>
     </div>
@@ -64,7 +66,7 @@
 
     <div class="col-lg-10 mx-auto">
 
-        <table class="table table-hover">
+        <table class="table table-hover endpoints-list-table">
             <thead>
             <tr>
                 <th scope="col" width="60%">Path</th>
@@ -73,32 +75,33 @@
             </tr>
             </thead>
             <tbody>
-            <tr th:each="endpoint : ${endpointsPage.content}">
-                <td th:text="${endpoint.path}"></td>
-                <td th:text="${endpoint.active}"></td>
+            <tr th:each="endpoint : ${endpointsPage.content}" class="endpoint-action-row">
+                <td th:text="${endpoint.path}" class="endpoint-path"></td>
+                <td th:text="${endpoint.active}" class="endpoint-active-state"></td>
                 <td>
                     <div th:switch="${endpoint.active}" role="group" class="btn-group">
                         <form action="#" th:case="${true}"
                               th:action="@{'/endpoints-manager/{id}/active/false'(id=${endpoint.id})}" th:method="put">
                             <input type="hidden" name="_method" value="put"/>
-                            <button type="submit" class="btn btn-warning">Pause</button>
+                            <button type="submit" class="btn btn-warning pause-endpoint-listening-button">Pause</button>
                         </form>
                         <form action="#" th:case="*"
                               th:action="@{'/endpoints-manager/{id}/active/true'(id=${endpoint.id})}"
                               th:method="put">
                             <input type="hidden" name="_method" value="put"/>
-                            <button type="submit" class="btn btn-success">Resume</button>
+                            <button type="submit" class="btn btn-success resume-endpoint-listening-button">Resume
+                            </button>
                         </form>
                     </div>
                 </td>
                 <td>
-                    <a role="button" class="btn btn-info"
+                    <a role="button" class="btn btn-info view-endpoint-info-button"
                        th:href="@{'/endpoints-manager/{id}'(id=${endpoint.id})}">View</a>
                 </td>
                 <td>
                     <form action="#" th:action="@{'/endpoints-manager/{id}'(id=${endpoint.id})}" th:method="delete">
                         <input type="hidden" name="_method" value="delete"/>
-                        <button type="submit" class="btn btn-danger">Delete</button>
+                        <button type="submit" class="btn btn-danger delete-endpoint-button">Delete</button>
                     </form>
                 </td>
             </tr>

@@ -27,7 +27,7 @@
         </div>
     </div>
 
-    <div class="alert alert-warning col-lg-10 mx-auto">
+    <div class="alert alert-warning col-lg-10 mx-auto endpoint-actions-panel">
         <div class="col-lg-2 mt-3 mb-3 float-left">
             <span class="font-weight-bold" th:text="${endpoint.path}"></span>
         </div>
@@ -36,13 +36,13 @@
             <form action="#" th:case="${true}"
                   th:action="@{'/endpoints-manager/{id}/active/false'(id=${endpoint.id})}" th:method="put">
                 <input type="hidden" name="_method" value="put"/>
-                <button type="submit" class="btn btn-warning">Pause</button>
+                <button type="submit" class="btn btn-warning pause-endpoint-listening-button">Pause</button>
             </form>
             <form action="#" th:case="*"
                   th:action="@{'/endpoints-manager/{id}/active/true'(id=${endpoint.id})}"
                   th:method="put">
                 <input type="hidden" name="_method" value="put"/>
-                <button type="submit" class="btn btn-success">Resume</button>
+                <button type="submit" class="btn btn-success resume-endpoint-listening-button">Resume</button>
             </form>
         </div>
 
@@ -50,25 +50,27 @@
             <form action="#" th:action="@{'/endpoints-manager/{id}/clear'(id=${endpoint.id})}"
                   th:method="post">
                 <input type="hidden" name="_method" value="post"/>
-                <button type="submit" class="btn btn-danger">Clear</button>
+                <button type="submit" class="btn btn-danger clear-requests-button">Clear</button>
             </form>
         </div>
 
         <div class="col-lg-4 mt-2 mb-3 float-right">
             <form class="form-inline">
                 <input type="text" class="form-control" name="query" id="query" placeholder="Search for ...">
-                <button type="submit" class="btn btn-info">Go!</button>
+                <button type="submit" class="btn btn-info search-go-button">Go!</button>
             </form>
         </div>
     </div>
 
     <div class="col-lg-10 mx-auto">
         <div class="col-lg-1 float-left">
-            <a role="button" class="btn btn-info mt-2 mb-3" th:href="@{'/'}">Back</a>
+            <a role="button" class="btn btn-info mt-2 mb-3 back-button" th:href="@{'/'}">Back</a>
         </div>
 
         <div class="col-lg-1 float-left">
-            <button type="submit" class="btn btn-primary mt-2 mb-3" onclick="window.location.reload()">Refresh</button>
+            <button type="submit" class="btn btn-primary mt-2 mb-3 refresh-button" onclick="window.location.reload()">
+                Refresh
+            </button>
         </div>
 
         <div class="col-lg-4 float-right">
@@ -91,29 +93,30 @@
                     data-toggle="collapse">
                     <td th:text="${#temporals.format(request.receivedAt, 'dd-MM-yyyy HH:mm:ss')}"></td>
                     <td>
-                        <span class="font-weight-bold" th:text="${request.requestMethod}"></span>
-                        <span th:text="' ' + ${request.url}"></span>
+                        <span class="font-weight-bold request-method" th:text="${request.requestMethod}"></span>
+                        <span class="request-url" th:text="' ' + ${request.url}"></span>
                     </td>
                 </tr>
                 <tr th:id="'detailed-info-' + ${request.id}" class="accordion-body collapse">
-                    <td class="hiddenRow bg-frozen-grass" colspan="2">
+                    <td class="hiddenRow bg-frozen-grass expanded-view" colspan="2">
                         <span class="font-weight-bold">Body:</span>
-                        <div th:text="${request.body}" class="bg-sunny-oak-leave mx-auto m-2 p-2"></div>
+                        <div th:text="${request.body}"
+                             class="bg-sunny-oak-leave mx-auto m-2 p-2 request-body-content"></div>
 
                         <span class="font-weight-bold">Headers:</span>
-                        <div class="container bg-sunny-oak-leave mx-auto m-2 p-2">
+                        <div class="container bg-sunny-oak-leave mx-auto m-2 p-2 request-headers-content">
                             <div class="row ">
                                 <div class="col col-lg-6 font-italic text-info">Name</div>
                                 <div class="col col-lg-6 font-italic text-info">Value</div>
                             </div>
                             <div th:each="requestHeader : ${request.requestHeaders}" class="row">
-                                <div th:text="${requestHeader.name}" class="col col-lg-6"></div>
-                                <div th:text="${requestHeader.value}" class="col col-lg-6"></div>
+                                <div th:text="${requestHeader.name}" class="col col-lg-6 request-header-name"></div>
+                                <div th:text="${requestHeader.value}" class="col col-lg-6 request-header-value"></div>
                             </div>
                         </div>
 
                         <span class="font-weight-bold">Cookies:</span>
-                        <div class="container bg-sunny-oak-leave break-text mx-auto m-2 p-2">
+                        <div class="container bg-sunny-oak-leave break-text mx-auto m-2 p-2 cookies-content">
                             <div class="row">
                                 <div class="col col-lg-2 font-italic text-info">Name</div>
                                 <div class="col col-lg-2 font-italic text-info">Value</div>
@@ -123,14 +126,14 @@
                                 <div class="col col-lg-1 font-italic text-info">HTTP Only</div>
                                 <div class="col col-lg-1 font-italic text-info">Secure</div>
                             </div>
-                            <div th:each="requestCookie : ${request.requestCookies}" class="row">
-                                <div th:text="${requestCookie.name}" class="col col-lg-2"></div>
-                                <div th:text="${requestCookie.value}" class="col col-lg-2"></div>
-                                <div th:text="${requestCookie.domain}" class="col col-lg-2"></div>
-                                <div th:text="${requestCookie.path}" class="col col-lg-2"></div>
-                                <div th:text="${requestCookie.maxAge}" class="col col-lg-2"></div>
-                                <div th:text="${requestCookie.httpOnly}" class="col col-lg-1"></div>
-                                <div th:text="${requestCookie.secure}" class="col col-lg-1"></div>
+                            <div th:each="requestCookie : ${request.requestCookies}" class="row cookie-content">
+                                <div th:text="${requestCookie.name}" class="col col-lg-2 cookie-name"></div>
+                                <div th:text="${requestCookie.value}" class="col col-lg-2 cookie-value"></div>
+                                <div th:text="${requestCookie.domain}" class="col col-lg-2 cookie-domain"></div>
+                                <div th:text="${requestCookie.path}" class="col col-lg-2 cookie-path"></div>
+                                <div th:text="${requestCookie.maxAge}" class="col col-lg-2 cookie-max-age"></div>
+                                <div th:text="${requestCookie.httpOnly}" class="col col-lg-1 cookie-http-only"></div>
+                                <div th:text="${requestCookie.secure}" class="col col-lg-1 cookie-secure"></div>
                             </div>
                         </div>
                     </td>
@@ -146,7 +149,8 @@
                         <label for="size" class="col-lg-7 col-form-label">Items per page: </label>
                         <input type="text" class="col-lg-5 form-control" name="size" id="size"
                                th:placeholder="${requestsPage.size}">
-                        <input type="hidden" class="col-lg-5 form-control" name="query" id="searchQuery" th:value="${query}">
+                        <input type="hidden" class="col-lg-5 form-control" name="query" id="searchQuery"
+                               th:value="${query}">
                         <input type="submit" style="display: none"/>
                     </div>
                 </form>
