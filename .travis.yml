@@ -16,11 +16,11 @@ addons:
   chrome: stable
 
 script:
+- docker login --username ${DOCKER_LOGIN} --password ${DOCKER_PASSWORD}
 - mvn clean package
 - docker-compose up --build -d
 - mvn integration-test -Dskip.functional.tests=false
 
 after_success:
-- docker login --username ${DOCKER_LOGIN} --password ${DOCKER_PASSWORD}
 - docker tag jrc tpolishchuk/jrcatcher:${TRAVIS_BUILD_NUMBER}
 - docker push tpolishchuk/jrcatcher:${TRAVIS_BUILD_NUMBER}
