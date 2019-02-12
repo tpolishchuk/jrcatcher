@@ -59,10 +59,12 @@ public class EndpointRestController {
 
         requestService.addOrUpdate(request);
 
-        List<RequestCookie> requestCookies = buildRequestCookiesList(request, httpServletRequest);
-        List<RequestHeader> requestHeaders = buildRequestHeadersList(request, httpServletRequest);
+        if (httpServletRequest.getCookies() != null) {
+            List<RequestCookie> requestCookies = buildRequestCookiesList(request, httpServletRequest);
+            requestCookieService.addOrUpdateAll(requestCookies);
+        }
 
-        requestCookieService.addOrUpdateAll(requestCookies);
+        List<RequestHeader> requestHeaders = buildRequestHeadersList(request, httpServletRequest);
         requestHeaderService.addOrUpdateAll(requestHeaders);
 
         return new APIResponse("Request is captured successfully");
