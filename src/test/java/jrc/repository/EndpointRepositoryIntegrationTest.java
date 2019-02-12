@@ -15,7 +15,7 @@ import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.core.IsEqual.equalTo;
 
 @RunWith(SpringRunner.class)
-@DataJpaTest
+@DataJpaTest(showSql = false)
 public class EndpointRepositoryIntegrationTest {
 
     @Autowired
