@@ -2,18 +2,26 @@ language: java
 sudo: false
 
 jdk:
-  - openjdk11
+- openjdk11
 
 branches:
   only:
-    - master
+  - master
 
 cache:
   directories:
-    - "$HOME/.m2"
+  - "$HOME/.m2"
+
+addons:
+  chrome: stable
 
 script:
-  - mvn clean install
+- mvn clean package
+- docker build -t jrcatcher .
+- docker-compose up -d
+- mvn integration-test -Dskip.functional.tests=false
 
 after_success:
-  - echo "TODO"
+- docker login --username ${DOCKER_LOGIN} --password ${DOCKER_PASSWORD}
+- docker tag jrcatcher tpolishchuk/jrcatcher:${TRAVIS_BUILD_NUMBER}
+- docker push tpolishchuk/jrcatcher:${TRAVIS_BUILD_NUMBER}
