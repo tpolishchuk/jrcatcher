@@ -78,7 +78,10 @@ public class EndpointsManagerController {
         }
 
         endpoint.setPath(path);
-        endpoint.setActive(true);
+
+        if (endpoint.getActive() == null) {
+            endpoint.setActive(true);
+        }
 
         endpointService.addOrUpdate(endpoint);
         return "redirect:/";
