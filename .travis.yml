@@ -21,7 +21,7 @@ before_install:
 script:
 - docker login --username ${DOCKER_LOGIN} --password ${DOCKER_PASSWORD}
 - mvn clean package
-- docker-compose up -f docker-compose-ci.yml -d
+- docker-compose -f docker-compose-ci.yml up --build -d
 - mvn integration-test -Dskip.functional.tests=false
 
 after_success:
