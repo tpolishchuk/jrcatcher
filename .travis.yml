@@ -21,11 +21,11 @@ before_install:
 script:
 - docker login --username ${DOCKER_LOGIN} --password ${DOCKER_PASSWORD}
 - mvn clean package
-- docker-compose up --build -d
+- docker-compose up -f docker-compose-ci.yml -d
 - mvn integration-test -Dskip.functional.tests=false
 
 after_success:
-- docker tag jrc tpolishchuk/jrcatcher:${TRAVIS_BUILD_NUMBER}
+- docker tag jrcatcher tpolishchuk/jrcatcher:${TRAVIS_BUILD_NUMBER}
 - docker push tpolishchuk/jrcatcher:${TRAVIS_BUILD_NUMBER}
-- docker tag jrc tpolishchuk/jrcatcher:stable
+- docker tag jrcatcher tpolishchuk/jrcatcher:stable
 - docker push tpolishchuk/jrcatcher:stable

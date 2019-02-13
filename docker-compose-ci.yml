@@ -23,8 +23,11 @@ services:
   jrc_app:
     links:
     - jrc_mysql
-    image: tpolishchuk/jrcatcher:stable
+    image: jrcatcher
     container_name: jrc_app
+    build:
+      context: ./
+      dockerfile: Dockerfile
     depends_on:
       jrc_mysql:
         condition: service_healthy
