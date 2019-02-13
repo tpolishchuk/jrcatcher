@@ -27,3 +27,5 @@ script:
 after_success:
 - docker tag jrc tpolishchuk/jrcatcher:${TRAVIS_BUILD_NUMBER}
 - docker push tpolishchuk/jrcatcher:${TRAVIS_BUILD_NUMBER}
+- docker tag jrc tpolishchuk/jrcatcher:stable
+- docker push tpolishchuk/jrcatcher:stable

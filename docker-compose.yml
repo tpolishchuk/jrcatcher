@@ -23,7 +23,7 @@ services:
   jrc_app:
     links:
     - jrc_mysql
-    image: jrc
+    image: tpolishchuk/jrcatcher:stable
     container_name: jrc_app
     build:
       context: ./

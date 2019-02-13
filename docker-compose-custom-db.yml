@@ -2,7 +2,7 @@ version: '2.1'
 
 services:
   jrc_app:
-    image: jrc
+    image: tpolishchuk/jrcatcher:stable
     container_name: jrc_app
     build:
       context: ./
