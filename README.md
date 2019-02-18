@@ -1,4 +1,4 @@
-#Java Request Catcher
+# Java Request Catcher
 
 [![Build Status](https://travis-ci.org/tpolishchuk/jrcatcher.svg?branch=master)](https://travis-ci.org/tpolishchuk/jrcatcher)
 
@@ -6,7 +6,7 @@ Java Request Catcher (JRC) is tiny Java-based project to help you with webhooks 
 
 JRC has simple UI to organize your endpoints and log caught requests.
 
-##Key features
+## Key features
 * Can be deployed to any environment
 * Supports connection to a custom database to log your requests
 * You can set up as much endpoints for data listening as you wish
@@ -14,7 +14,7 @@ JRC has simple UI to organize your endpoints and log caught requests.
 * You can filter request logs data by content in case if you need to analyze it deeply
 * You can clean all data in one click
 
-##Default setup
+## Default setup
 
 To perform default setup clone this project and run the following command in the root directory:
 
@@ -27,7 +27,7 @@ To access JRC web interface use [http://localhost:7070/](http://localhost:7070/)
 
 If you want to amend project settings, feel free to change .env file and then restart the environment.
 
-##Custom database setup
+## Custom database setup
 
 If you do not want to use jrc_mysql container, specify your MySQL settings in .env.custom.db file and run `run-on-custom-db.sh` script in the root directory. 
 
