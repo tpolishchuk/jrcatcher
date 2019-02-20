@@ -3,11 +3,10 @@
 ENV_FILE=.env.custom.db
 
 print_help() {
-    echo "Usage: run-on-custom-db.sh [--help | -h][--env-file-path | -e <file path>][--create-database | -d][--create-user | -u]
+    echo "Usage: run-on-custom-db.sh [--help | -h][--create-database | -d][--create-user | -u]
 
     Options:
   --help, -h                        Print help
-  --env-file-path, -e <file path>   Use custom environment file, .env.custom.db is a default value
   --create-database, -d             Drop if exists and then create a MySQL database required in environment file
   --create-user, -u                 Drop if exists and then create a MySQL user required in environment file
 
@@ -20,7 +19,7 @@ print_help() {
 }
 
 create_database() {
-    echo Creating '${MYSQL_DATABASE}' database
+    echo Creating ${MYSQL_DATABASE} database
     mysql -uroot -p${MYSQL_ROOT_PASSWORD} --host=${MYSQL_HOST} << EOF
     DROP DATABASE IF EXISTS ${MYSQL_DATABASE};
     CREATE DATABASE ${MYSQL_DATABASE};
@@ -28,35 +27,18 @@ EOF
 }
 
 seed_database() {
-    echo Seeding '${MYSQL_DATABASE}' database
+    echo Seeding ${MYSQL_DATABASE} database
     mysql -u${MYSQL_USER} -p${MYSQL_PASSWORD} --host=${MYSQL_HOST} --database=${MYSQL_DATABASE} < ./src/main/resources/sql/db_init.sql
 }
 
 create_user() {
-    echo Creating user '${MYSQL_USER}' for database '${MYSQL_DATABASE}'
+    echo Creating user ${MYSQL_USER} for database ${MYSQL_DATABASE}
     mysql -uroot -p${MYSQL_ROOT_PASSWORD} --host=${MYSQL_HOST} << EOF
     DROP USER IF EXISTS '${MYSQL_USER}'@'localhost';
     CREATE USER '${MYSQL_USER}'@'localhost' identified by '${MYSQL_PASSWORD}';
     GRANT ALL on ${MYSQL_DATABASE}.* to '${MYSQL_USER}'@'localhost';
     FLUSH PRIVILEGES;
 EOF
-}
-
-set_env_file_path() {
-    ENV_FILE=$1
-
-    if [[ -z ${ENV_FILE} ]]
-    then
-          echo "Custom environment file path is empty!"
-          exit 1
-    fi
-
-    if [[ ! -f ${ENV_FILE} ]]; then
-        echo "File ${ENV_FILE} is not found!"
-        exit 1
-    fi
-
-    echo Set $ENV_FILE as an environment file for processing
 }
 
 parse_env_file() {
@@ -86,16 +68,12 @@ do
 			print_help
 			exit
 			;;
-		--env-file-path | -e)
-			set_env_file_path $2
-			parse_env_file
+		--create-user | -u)
+			create_user
 			;;
 		--create-database | -d)
 			create_database
 			seed_database
-			;;
-		--create-user | -u)
-			create_user
 			;;
 	esac
 	shift
