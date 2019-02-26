@@ -4,18 +4,19 @@ import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
-@Table(name="request_headers")
+@Table(name = "request_headers")
 public class RequestHeader {
 
     @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
 
     private String name;
 
     private String value;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.ALL,
+               fetch = FetchType.LAZY)
     @JoinColumn(name = "request_id")
     private Request request;
 

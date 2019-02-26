@@ -14,7 +14,7 @@ CREATE TABLE IF NOT EXISTS `requests` (
 	`received_at` TIMESTAMP NOT NULL,
 	PRIMARY KEY (`id`),
 	KEY `fk_requests_endpointid_idx` (`endpoint_id`),
-	CONSTRAINT `requests_fk0` FOREIGN KEY (`endpoint_id`) REFERENCES `endpoints`(`id`)
+	CONSTRAINT `requests_fk0` FOREIGN KEY (`endpoint_id`) REFERENCES `endpoints`(`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `request_cookies` (
@@ -29,7 +29,7 @@ CREATE TABLE IF NOT EXISTS `request_cookies` (
 	`secure` bool NOT NULL,
 	PRIMARY KEY (`id`),
 	KEY `fk_requestcookies_requestid_idx` (`request_id`),
-	CONSTRAINT `request_cookies_fk0` FOREIGN KEY (`request_id`) REFERENCES `requests`(`id`)
+	CONSTRAINT `request_cookies_fk0` FOREIGN KEY (`request_id`) REFERENCES `requests`(`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `request_headers` (
@@ -39,5 +39,5 @@ CREATE TABLE IF NOT EXISTS `request_headers` (
 	`value` varchar(255),
 	PRIMARY KEY (`id`),
 	KEY `fk_requestheaders_requestid_idx` (`request_id`),
-	CONSTRAINT `request_headers_fk0` FOREIGN KEY (`request_id`) REFERENCES `requests`(`id`)
+	CONSTRAINT `request_headers_fk0` FOREIGN KEY (`request_id`) REFERENCES `requests`(`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

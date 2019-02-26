@@ -8,7 +8,7 @@ import java.util.Objects;
 public class RequestCookie {
 
     @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
 
     private String name;
@@ -25,7 +25,8 @@ public class RequestCookie {
 
     private Boolean secure;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.ALL,
+               fetch = FetchType.LAZY)
     @JoinColumn(name = "request_id")
     private Request request;
 

@@ -1,6 +1,8 @@
 package jrc.domain;
 
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -26,16 +28,19 @@ public class Request {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "endpoint_id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Endpoint endpoint;
 
     @OneToMany(cascade = CascadeType.ALL,
                fetch = FetchType.LAZY,
                mappedBy = "request")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private List<RequestCookie> requestCookies;
 
     @OneToMany(cascade = CascadeType.ALL,
                fetch = FetchType.LAZY,
                mappedBy = "request")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private List<RequestHeader> requestHeaders;
 
     public Integer getId() {

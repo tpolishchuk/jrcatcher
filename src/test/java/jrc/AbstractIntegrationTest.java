@@ -2,6 +2,8 @@ package jrc;
 
 import jrc.domain.Endpoint;
 import jrc.domain.Request;
+import jrc.domain.RequestCookie;
+import jrc.domain.RequestHeader;
 import org.apache.commons.lang3.RandomStringUtils;
 
 import java.time.LocalDateTime;
@@ -22,11 +24,32 @@ public abstract class AbstractIntegrationTest {
         request.setEndpoint(endpoint);
         request.setRequestMethod("POST");
         request.setBody(RandomStringUtils.randomAlphanumeric(20));
-        request.setUrl("http://"+RandomStringUtils.randomAlphanumeric(10) + ".org");
+        request.setUrl("http://" + RandomStringUtils.randomAlphanumeric(10) + ".org");
         request.setReceivedAt(LocalDateTime.now());
         request.setRequestCookies(new ArrayList<>());
         request.setRequestHeaders(new ArrayList<>());
 
         return request;
+    }
+
+    protected RequestCookie generateDummyRequestCookie(Request request) {
+        RequestCookie requestCookie = new RequestCookie();
+        requestCookie.setRequest(request);
+        requestCookie.setName("Foo");
+        requestCookie.setValue("Bar");
+        requestCookie.setMaxAge(-1L);
+        requestCookie.setHttpOnly(false);
+        requestCookie.setSecure(false);
+
+        return requestCookie;
+    }
+
+    protected RequestHeader generateDummyRequestHeader(Request request) {
+        RequestHeader requestHeader = new RequestHeader();
+        requestHeader.setRequest(request);
+        requestHeader.setName("Foo");
+        requestHeader.setValue("Bar");
+
+        return requestHeader;
     }
 }

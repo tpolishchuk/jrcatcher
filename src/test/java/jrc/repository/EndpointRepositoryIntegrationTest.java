@@ -1,6 +1,10 @@
 package jrc.repository;
 
+import jrc.AbstractIntegrationTest;
 import jrc.domain.Endpoint;
+import jrc.domain.Request;
+import jrc.domain.RequestCookie;
+import jrc.domain.RequestHeader;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -16,7 +20,7 @@ import static org.hamcrest.core.IsEqual.equalTo;
 
 @RunWith(SpringRunner.class)
 @DataJpaTest(showSql = false)
-public class EndpointRepositoryIntegrationTest {
+public class EndpointRepositoryIntegrationTest extends AbstractIntegrationTest {
 
     @Autowired
     private TestEntityManager entityManager;
@@ -113,5 +117,52 @@ public class EndpointRepositoryIntegrationTest {
         // when
         entityManager.persist(createdEndpoint);
         entityManager.flush();
+    }
+
+    @Test
+    public void whenDeleteWithChildEntities_thenReturnNull() {
+        // given
+        Endpoint createdEndpoint = generateDummyEndpoint();
+
+        entityManager.persist(createdEndpoint);
+        entityManager.flush();
+
+        Request createdRequest = generateDummyRequest(createdEndpoint);
+
+        entityManager.persist(createdRequest);
+        entityManager.flush();
+
+        RequestCookie createdRequestCookie = generateDummyRequestCookie(createdRequest);
+
+        entityManager.persist(createdRequestCookie);
+
+        RequestHeader createdRequestHeader = generateDummyRequestHeader(createdRequest);
+
+        entityManager.persist(createdRequestHeader);
+
+        // when
+        endpointRepository.delete(createdEndpoint);
+
+        Endpoint endpoint = endpointRepository.findByPath(createdEndpoint.getPath());
+
+        // then
+        assertThat(endpoint, is(nullValue()));
+    }
+
+    @Test
+    public void whenDeleteWithoutChildEntities_thenReturnNull() {
+        // given
+        Endpoint createdEndpoint = generateDummyEndpoint();
+
+        entityManager.persist(createdEndpoint);
+        entityManager.flush();
+
+        // when
+        endpointRepository.delete(createdEndpoint);
+
+        Endpoint endpoint = endpointRepository.findByPath(createdEndpoint.getPath());
+
+        // then
+        assertThat(endpoint, is(nullValue()));
     }
 }
