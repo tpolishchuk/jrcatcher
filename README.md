@@ -33,5 +33,6 @@ If you do not want to use jrc_mysql container, specify your MySQL settings in .e
 
 In result jrc_app will store requests in your database and all data will be accessible on web interface.
 
-[**Details and workflows**: to be updated in [JRC Project Wiki](https://github.com/tpolishchuk/jrcatcher/wiki) soon]
+## Details and workflows
 
+Are fully described in [JRC Project Wiki](https://github.com/tpolishchuk/jrcatcher/wiki) :sunglasses:
